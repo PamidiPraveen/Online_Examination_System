@@ -7,7 +7,7 @@ import os
 from functools import wraps
 
 # ---------------- APP CONFIG ----------------
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 
 # ---------------- MONGODB CONFIG (ATLAS) ----------------
