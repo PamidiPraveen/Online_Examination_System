@@ -21,7 +21,7 @@
 
         <!-- Registration Form -->
         <div class="bg-white py-8 px-6 shadow-xl rounded-lg">
-            <form class="space-y-6" method="POST" id="registerForm">
+            <form class="space-y-6" method="POST" action="{{ url_for('register') }}" id="registerForm">
                 <!-- Username -->
                 <div>
                     <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
@@ -233,5 +233,4 @@
     });
 </script>
 {% endblock %}
-
         // Reset previous errors
