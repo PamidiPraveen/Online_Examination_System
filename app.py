@@ -239,3 +239,9 @@ def init_sample_data():
 if __name__ == "__main__":
     init_sample_data()
     app.run()
+
+# ---------------- EXTRA SAFE INIT FOR VERCEL ----------------
+try:
+    init_sample_data()
+except Exception as e:
+    print("Sample data init skipped:", e)
