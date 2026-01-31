@@ -16,14 +16,17 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
 MONGO_URI = os.environ.get("MONGO_URI")
 
 if not MONGO_URI:
-    print("Warning: MONGO_URI not set")
+    print("Warning: MONGO_URI not set. Please configure it in Vercel Environment Variables")
 
-client = MongoClient(MONGO_URI)
-db = client.online_exam
-
-users_collection = db.users
-exams_collection = db.exams
-results_collection = db.results
+try:
+    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    db = client.online_exam
+    users_collection = db.users
+    exams_collection = db.exams
+    results_collection = db.results
+    print("MongoDB connected successfully")
+except Exception as e:
+    print("MongoDB connection failed:", e)
 
 # ---------------- AUTH DECORATORS ----------------
 def login_required(f):
@@ -57,7 +60,11 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        user = users_collection.find_one({"email": email})
+        try:
+            user = users_collection.find_one({"email": email})
+        except Exception as e:
+            flash("Database connection error", "error")
+            return render_template("login.html")
 
         if user and check_password_hash(user["password"], password):
             session["user_id"] = str(user["_id"])
@@ -237,7 +244,10 @@ def init_sample_data():
 
 # ---------------- MAIN ----------------
 if __name__ == "__main__":
-    init_sample_data()
+    try:
+        init_sample_data()
+    except Exception as e:
+        print("Sample data init error:", e)
     app.run()
 
 # ---------------- EXTRA SAFE INIT FOR VERCEL ----------------
